@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ureca_restaurant_reviews_flutter/models/dining-area-partial-model.dart';
 import 'package:ureca_restaurant_reviews_flutter/pages/dining-area-detail-page.dart';
 import 'package:ureca_restaurant_reviews_flutter/util/constants.dart';
+import 'package:ureca_restaurant_reviews_flutter/util/utils.dart';
 
 class DiningAreaDetailRouteArguments {
   DiningAreaDetailRouteArguments({this.id});
@@ -70,7 +71,7 @@ class DiningAreaListItem extends StatelessWidget {
                   SizedBox(
                     height: 2.0,
                   ),
-                  _buildStar(context, diningAreaItem.score,
+                  Utils.buildStar(context, diningAreaItem.score,
                       diningAreaItem.remainderScore),
                   SizedBox(
                     height: 8.0,
@@ -81,25 +82,6 @@ class DiningAreaListItem extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildStar(
-      BuildContext context, List<int> score, List<int> remainderScore) {
-    List<Icon> stars = new List<Icon>();
-
-    stars.addAll(score.map((s) => new Icon(
-          Icons.star,
-          color: Theme.of(context).primaryColor,
-        )));
-
-    stars.addAll(remainderScore.map((s) => new Icon(
-          Icons.star_border,
-          color: Theme.of(context).primaryColor,
-        )));
-
-    return new Row(
-      children: stars,
     );
   }
 }

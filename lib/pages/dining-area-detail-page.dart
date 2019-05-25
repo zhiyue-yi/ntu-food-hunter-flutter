@@ -1,9 +1,12 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_tags/selectable_tags.dart';
 import 'package:http/http.dart';
 import 'package:ureca_restaurant_reviews_flutter/models/dining-area-detail-model.dart';
+import 'package:ureca_restaurant_reviews_flutter/models/menu-model.dart';
+import 'package:ureca_restaurant_reviews_flutter/models/review-model.dart';
 import 'package:ureca_restaurant_reviews_flutter/util/constants.dart';
+import 'package:ureca_restaurant_reviews_flutter/util/utils.dart';
 
 class DiningAreaDetailPage extends StatefulWidget {
   int id = 1;
@@ -47,12 +50,17 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
         ),
       ),
       body: new FutureBuilder<DiningAreaDetailModel>(
-        future: getDiningArea(this.id),
-        builder: (context, snapshot) {
-          return _buildDiningAreaDetailsPage(context, snapshot.data);
-        },
-      ),
-      //bottomNavigationBar: _buildBottomNavigationBar(),
+          future: getDiningArea(this.id),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              if (snapshot.data != null) {
+                return _buildDiningAreaDetailsPage(context, snapshot.data);
+              } else {
+                return new CircularProgressIndicator();
+              }
+            }
+          }),
+      bottomNavigationBar: _buildBottomLeaveCommentBar(),
     );
   }
 
@@ -92,28 +100,18 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
                 SizedBox(height: 12.0),
                 _buildBasicInfoWidgets(model.capacity.toString(), 'capacity'),
                 SizedBox(height: 12.0),
-                // _buildDivider(screenSize),
-                // SizedBox(height: 12.0),
-                // _buildFurtherInfoWidget(),
-                // SizedBox(height: 12.0),
-                // _buildDivider(screenSize),
-                // SizedBox(height: 12.0),
-                // _buildSizeChartWidgets(),
-                // SizedBox(height: 12.0),
-                // _buildDetailsAndMaterialWidgets(),
-                // SizedBox(height: 12.0),
-                // _buildStyleNoteHeader(),
-                // SizedBox(height: 6.0),
-                // _buildDivider(screenSize),
-                // SizedBox(height: 4.0),
-                // _buildStyleNoteData(),
-                // SizedBox(height: 20.0),
-                // _buildMoreInfoHeader(),
-                // SizedBox(height: 6.0),
-                // _buildDivider(screenSize),
-                // SizedBox(height: 4.0),
-                // _buildMoreInfoData(),
-                // SizedBox(height: 24.0),
+                _buildDivider(screenSize),
+                SizedBox(height: 12.0),
+                _buildTags(model.tag),
+                SizedBox(height: 12.0),
+                _buildDivider(screenSize),
+                SizedBox(height: 12.0),
+                _buildRatingsAndMenuWidgets(model),
+                SizedBox(height: 12.0),
+                _buildDivider(screenSize),
+                SizedBox(height: 12.0),
+                _buildReviews(model.review),
+                SizedBox(height: 12.0),
               ],
             ),
           ),
@@ -184,40 +182,32 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
   }
 
   _buildBasicInfoWidgets(String text, String type) {
-    Icon icon;
-    switch (type) {
-      case 'address':
-        icon = new Icon(
-          Icons.room,
-          color: Colors.red[600],
-        );
-        break;
-      case 'subLoc':
-        icon = new Icon(
-          Icons.pin_drop,
-          color: Colors.blue[600],
-        );
-        break;
-      case 'phoneNo':
-        icon = new Icon(
-          Icons.phone,
-          color: Colors.green[600],
-        );
-        break;
-      case 'operatingHour':
-        icon = new Icon(
-          Icons.timer,
-          color: Colors.grey[600],
-        );
-        break;
-      case 'capacity':
-        text += ' Seats';
-        icon = new Icon(
-          Icons.local_dining,
-          color: Colors.grey[600],
-        );
-        break;
-    }
+    var iconType = {
+      'address': new Icon(
+        Icons.room,
+        color: Colors.red[600],
+      ),
+      'subLoc': new Icon(
+        Icons.pin_drop,
+        color: Colors.blue[600],
+      ),
+      'phoneNo': new Icon(
+        Icons.phone,
+        color: Colors.green[600],
+      ),
+      'operatingHour': new Icon(
+        Icons.timer,
+        color: Colors.grey[600],
+      ),
+      'capacity': new Icon(
+        Icons.local_dining,
+        color: Colors.grey[600],
+      ),
+    };
+
+    Icon icon = iconType[type];
+    if (type == 'capacity') text += ' Seats';
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Row(
@@ -251,176 +241,257 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
     );
   }
 
-  _buildFurtherInfoWidget() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: Row(
-        children: <Widget>[
-          Icon(
-            Icons.local_offer,
-            color: Colors.grey[500],
+  _buildTags(List<String> tags) {
+    List<Tag> tagElements = [];
+
+    tags.forEach((t) => tagElements.add(Tag(title: t, active: true)));
+
+    SelectableTags tagWidget = SelectableTags(
+      margin: new EdgeInsets.fromLTRB(12, 0, 0, 0),
+      alignment: MainAxisAlignment.start,
+      tags: tagElements,
+      columns: 3, // default 4
+    );
+
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: tagWidget,
+        ),
+      ],
+    );
+  }
+
+  _buildRatingsAndMenuWidgets(DiningAreaDetailModel model) {
+    TabController tabController = new TabController(length: 2, vsync: this);
+    int totalPoint = model.excellentReview +
+        model.aboveReview +
+        model.avgReview +
+        model.belowReview +
+        model.poorReview;
+
+    return Column(children: <Widget>[
+      TabBar(
+        controller: tabController,
+        tabs: <Widget>[
+          Tab(
+            icon: Icon(Icons.rate_review, color: Colors.black),
+            child: Text(
+              "RATINGS",
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
           ),
-          SizedBox(
-            width: 12.0,
-          ),
-          Text(
-            "Tap to get further info",
-            style: TextStyle(
-              color: Colors.grey[500],
+          Tab(
+            icon: Icon(Icons.menu, color: Colors.black),
+            child: Text(
+              "MENU",
+              style: TextStyle(
+                color: Colors.black,
+              ),
             ),
           ),
         ],
       ),
-    );
+      Container(
+        padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+        height: 200,
+        child: TabBarView(
+          controller: tabController,
+          children: <Widget>[
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  _buildRating('excellent', totalPoint, model.excellentReview),
+                  SizedBox(height: 10),
+                  _buildRating('above', totalPoint, model.aboveReview),
+                  SizedBox(height: 10),
+                  _buildRating('avg', totalPoint, model.avgReview),
+                  SizedBox(height: 10),
+                  _buildRating('below', totalPoint, model.belowReview),
+                  SizedBox(height: 10),
+                  _buildRating('poor', totalPoint, model.poorReview),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 20.0),
+              height: 200.0,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: _buildMenu(model.menu),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ]);
   }
 
-  _buildSizeChartWidgets() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Row(
+  _buildRating(String ratingType, int totalPoint, int point) {
+    String figureKey = ratingType + 'Review';
+    String percentKey = ratingType + 'ReviewPercent';
+
+    var iconMap = {
+      'poor': Icons.sentiment_very_dissatisfied,
+      'below': Icons.sentiment_dissatisfied,
+      'avg': Icons.sentiment_neutral,
+      'above': Icons.sentiment_satisfied,
+      'excellent': Icons.sentiment_very_satisfied
+    };
+
+    var ratingText = {
+      'poor': 'Poor',
+      'below': 'Below Average',
+      'avg': 'Average',
+      'above': 'Above Average',
+      'excellent': 'Excellent',
+    };
+
+    Icon icon = new Icon(
+      iconMap[ratingType],
+      color: Colors.grey[850],
+    );
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        icon,
+        SizedBox(
+          width: 10,
+        ),
+        Container(
+          width: 100,
+          child: Text(ratingText[ratingType]),
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          child: Stack(
+            alignment: Alignment.center,
             children: <Widget>[
-              Icon(
-                Icons.straighten,
-                color: Colors.grey[600],
-              ),
-              SizedBox(
-                width: 12.0,
+              LinearProgressIndicator(
+                value: point.toDouble() / 10,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Colors.blue[600],
+                ),
+                backgroundColor: Colors.grey[200],
               ),
               Text(
-                "Size",
-                style: TextStyle(
-                  color: Colors.grey[600],
-                ),
+                point.toString(),
+                style: TextStyle(fontSize: 8),
               ),
             ],
           ),
-          Text(
-            "SIZE CHART",
-            style: TextStyle(
-              color: Colors.blue[400],
-              fontSize: 12.0,
-            ),
-          ),
-        ],
-      ),
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Text(
+          (point / totalPoint * 100).toString() + '%',
+        )
+      ],
     );
   }
 
-  _buildDetailsAndMaterialWidgets() {
-    TabController tabController = new TabController(length: 2, vsync: this);
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          TabBar(
-            controller: tabController,
-            tabs: <Widget>[
-              Tab(
-                child: Text(
-                  "DETAILS",
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
+  _buildMenu(List<MenuModel> menuModel) {
+    List<Widget> menu = new List<Widget>();
+    menuModel.forEach((m) => menu.add(Container(
+          child: Container(
+            width: 200.0,
+            child: Card(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                child: Column(
+                  children: <Widget>[
+                    Expanded(
+                      child: Image.network(
+                        'https://d1fd34dzzl09j.cloudfront.net/Images/CFACOM/Stories%20Images/2017/08/Vegetarian/HeaderGardenSaladTrayD.jpg?h=960&w=1440&la=en',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    Text(
+                      m.name,
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      m.price.toString(),
+                      textAlign: TextAlign.left,
+                    ),
+                  ],
                 ),
               ),
-              Tab(
-                child: Text(
-                  "MATERIAL & CARE",
-                  style: TextStyle(
-                    color: Colors.black,
+            ),
+          ),
+        )));
+    return menu;
+  }
+
+  _buildReviews(List<ReviewModel> reviewModel) {
+    List<Widget> reviewWidgets = [
+      Padding(
+        padding: EdgeInsets.only(left: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            new Icon(
+              Icons.comment,
+            ),
+            SizedBox(width: 5),
+            Text(
+              'Comments',
+              style: TextStyle(fontSize: 18),
+            )
+          ],
+        ),
+      ),
+      SizedBox(height: 20),
+    ];
+
+    reviewModel.forEach((r) => reviewWidgets.add(Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        r.reviewer,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(r.date),
+                    ],
                   ),
-                ),
+                  Utils.buildStar(context, r.starScore, r.remainderScore),
+                ],
               ),
+              SizedBox(height: 10),
+              Text(r.comment),
+              Divider(),
             ],
           ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-            height: 40.0,
-            child: TabBarView(
-              controller: tabController,
-              children: <Widget>[
-                Text(
-                  "76% acrylic, 19% polyster, 5% metallic yarn Hand-wash cold",
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-                Text(
-                  "86% acrylic, 9% polyster, 1% metallic yarn Hand-wash cold",
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
+        )));
+
+    return Column(
+      children: reviewWidgets,
     );
   }
 
-  _buildStyleNoteHeader() {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 12.0,
-      ),
-      child: Text(
-        "STYLE NOTE",
-        style: TextStyle(
-          color: Colors.grey[800],
-        ),
-      ),
-    );
-  }
-
-  _buildStyleNoteData() {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 12.0,
-      ),
-      child: Text(
-        "Boys dress",
-        style: TextStyle(
-          color: Colors.grey[600],
-        ),
-      ),
-    );
-  }
-
-  _buildMoreInfoHeader() {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 12.0,
-      ),
-      child: Text(
-        "MORE INFO",
-        style: TextStyle(
-          color: Colors.grey[800],
-        ),
-      ),
-    );
-  }
-
-  _buildMoreInfoData() {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 12.0,
-      ),
-      child: Text(
-        "Product Code: 410\nTax info: Applicable GST will be charged at the time of chekout",
-        style: TextStyle(
-          color: Colors.grey[600],
-        ),
-      ),
-    );
-  }
-
-  _buildBottomNavigationBar() {
+  _buildBottomLeaveCommentBar() {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 50.0,
@@ -429,49 +500,22 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Flexible(
-            fit: FlexFit.tight,
-            flex: 1,
             child: RaisedButton(
               onPressed: () {},
-              color: Colors.grey,
+              color: Colors.blue[600],
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      Icons.list,
+                      Icons.add_comment,
                       color: Colors.white,
                     ),
                     SizedBox(
                       width: 4.0,
                     ),
                     Text(
-                      "SAVE",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Flexible(
-            flex: 2,
-            child: RaisedButton(
-              onPressed: () {},
-              color: Colors.greenAccent,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      Icons.card_travel,
-                      color: Colors.white,
-                    ),
-                    SizedBox(
-                      width: 4.0,
-                    ),
-                    Text(
-                      "ADD TO BAG",
+                      "Leave Your Comment",
                       style: TextStyle(color: Colors.white),
                     ),
                   ],

@@ -33,26 +33,33 @@ class HomePage extends StatelessWidget {
     return new FutureBuilder<List<DiningAreaPartialModel>>(
       future: getDiningAreas(),
       builder: (context, snapshot) {
-        return CustomScrollView(
-          slivers: <Widget>[
-            SliverGrid(
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: MediaQuery.of(context).size.width,
-                childAspectRatio: 2.0,
-              ),
-              delegate:
-                  SliverChildBuilderDelegate((BuildContext context, int index) {
-                return SearchBox();
-              }, childCount: 1),
-            ),
-            SliverList(
-              delegate:
-                  SliverChildBuilderDelegate((BuildContext context, int index) {
-                return DiningAreaListItem(diningAreaItem: snapshot.data[index]);
-              }, childCount: snapshot.data.length),
-            )
-          ],
-        );
+        if (snapshot.hasData) {
+          if (snapshot.data != null) {
+            return CustomScrollView(
+              slivers: <Widget>[
+                SliverGrid(
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: MediaQuery.of(context).size.width,
+                    childAspectRatio: 2.0,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                    return SearchBox();
+                  }, childCount: 1),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                    return DiningAreaListItem(
+                        diningAreaItem: snapshot.data[index]);
+                  }, childCount: snapshot.data.length),
+                )
+              ],
+            );
+          } else {
+            return new CircularProgressIndicator();
+          }
+        }
       },
     );
   }
