@@ -6,8 +6,7 @@ import 'package:ureca_restaurant_reviews_flutter/models/dining-area-detail-model
 import 'package:ureca_restaurant_reviews_flutter/models/menu-model.dart';
 import 'package:ureca_restaurant_reviews_flutter/models/review-model.dart';
 import 'package:ureca_restaurant_reviews_flutter/util/constants.dart';
-import 'package:ureca_restaurant_reviews_flutter/util/utils.dart';
-import 'package:ureca_restaurant_reviews_flutter/widgets/comment-form.dart';
+import 'package:ureca_restaurant_reviews_flutter/pages/comment-form.dart';
 import 'package:ureca_restaurant_reviews_flutter/widgets/review-stars.dart';
 
 class DiningAreaDetailPage extends StatefulWidget {
@@ -510,15 +509,11 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
           Flexible(
             child: RaisedButton(
               onPressed: () {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Container(
-                          child: Padding(
-                        padding: EdgeInsets.all(32.0),
-                        child: CommentFormWidget(menuItems: menuListModel),
-                      ));
-                    });
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            new CommentFormWidget(menuItems: menuListModel)));
               },
               color: Colors.blue[600],
               child: Center(

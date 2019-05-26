@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:ureca_restaurant_reviews_flutter/models/dining-area-partial-model.dart';
 import 'package:ureca_restaurant_reviews_flutter/pages/dining-area-detail-page.dart';
 import 'package:ureca_restaurant_reviews_flutter/util/constants.dart';
-import 'package:ureca_restaurant_reviews_flutter/util/utils.dart';
 import 'package:ureca_restaurant_reviews_flutter/widgets/review-stars.dart';
 
 class DiningAreaDetailRouteArguments {
