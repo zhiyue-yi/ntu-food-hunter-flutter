@@ -44,13 +44,13 @@ class HomePage extends StatelessWidget {
                   ),
                   delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
-                    return SearchBox();
+                    return SearchBoxWidget();
                   }, childCount: 1),
                 ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
-                    return DiningAreaListItem(
+                    return DiningAreaItemWidget(
                         diningAreaItem: snapshot.data[index]);
                   }, childCount: snapshot.data.length),
                 )
@@ -60,6 +60,7 @@ class HomePage extends StatelessWidget {
             return new CircularProgressIndicator();
           }
         }
+        return ErrorWidget(context);
       },
     );
   }

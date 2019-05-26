@@ -3,16 +3,17 @@ import 'package:ureca_restaurant_reviews_flutter/models/dining-area-partial-mode
 import 'package:ureca_restaurant_reviews_flutter/pages/dining-area-detail-page.dart';
 import 'package:ureca_restaurant_reviews_flutter/util/constants.dart';
 import 'package:ureca_restaurant_reviews_flutter/util/utils.dart';
+import 'package:ureca_restaurant_reviews_flutter/widgets/review-stars.dart';
 
 class DiningAreaDetailRouteArguments {
   DiningAreaDetailRouteArguments({this.id});
   final int id;
 }
 
-class DiningAreaListItem extends StatelessWidget {
+class DiningAreaItemWidget extends StatelessWidget {
   final DiningAreaPartialModel diningAreaItem;
 
-  const DiningAreaListItem({Key key, this.diningAreaItem}) : super(key: key);
+  const DiningAreaItemWidget({Key key, this.diningAreaItem}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +72,9 @@ class DiningAreaListItem extends StatelessWidget {
                   SizedBox(
                     height: 2.0,
                   ),
-                  Utils.buildStar(context, diningAreaItem.score,
-                      diningAreaItem.remainderScore),
+                  ReviewStarsWidget(
+                      score: diningAreaItem.score,
+                      remainderScore: diningAreaItem.remainderScore),
                   SizedBox(
                     height: 8.0,
                   ),

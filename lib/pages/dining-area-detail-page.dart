@@ -7,6 +7,8 @@ import 'package:ureca_restaurant_reviews_flutter/models/menu-model.dart';
 import 'package:ureca_restaurant_reviews_flutter/models/review-model.dart';
 import 'package:ureca_restaurant_reviews_flutter/util/constants.dart';
 import 'package:ureca_restaurant_reviews_flutter/util/utils.dart';
+import 'package:ureca_restaurant_reviews_flutter/widgets/comment-form.dart';
+import 'package:ureca_restaurant_reviews_flutter/widgets/review-stars.dart';
 
 class DiningAreaDetailPage extends StatefulWidget {
   int id = 1;
@@ -28,39 +30,42 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(
-            Icons.chevron_left,
-            size: 40.0,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        backgroundColor: Colors.white,
-        title: Text(
-          "LOCATION DETAIL",
-          style: TextStyle(
-            color: Colors.black,
-          ),
-        ),
-      ),
-      body: new FutureBuilder<DiningAreaDetailModel>(
-          future: getDiningArea(this.id),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              if (snapshot.data != null) {
-                return _buildDiningAreaDetailsPage(context, snapshot.data);
-              } else {
-                return new CircularProgressIndicator();
-              }
-            }
-          }),
-      bottomNavigationBar: _buildBottomLeaveCommentBar(),
+    return new FutureBuilder<DiningAreaDetailModel>(
+      future: getDiningArea(this.id),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          if (snapshot.data != null) {
+            return Scaffold(
+              appBar: AppBar(
+                centerTitle: true,
+                leading: IconButton(
+                  icon: Icon(
+                    Icons.chevron_left,
+                    size: 40.0,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                backgroundColor: Colors.white,
+                title: Text(
+                  snapshot.data.name,
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              body: _buildDiningAreaDetailsPage(context, snapshot.data),
+              bottomNavigationBar:
+                  _buildBottomLeaveCommentBar(snapshot.data.menu),
+            );
+          } else {
+            return new CircularProgressIndicator();
+          }
+        }
+        return ErrorWidget(context);
+      },
     );
   }
 
@@ -404,6 +409,8 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
           child: Container(
             width: 200.0,
             child: Card(
+              elevation: 4.0,
+              borderOnForeground: false,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
                 child: Column(
@@ -431,7 +438,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
     return menu;
   }
 
-  _buildReviews(List<ReviewModel> reviewModel) {
+  _buildReviews(List<ReviewModel> reviewListModel) {
     List<Widget> reviewWidgets = [
       Padding(
         padding: EdgeInsets.only(left: 10),
@@ -453,7 +460,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
       SizedBox(height: 20),
     ];
 
-    reviewModel.forEach((r) => reviewWidgets.add(Padding(
+    reviewListModel.forEach((r) => reviewWidgets.add(Padding(
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -476,7 +483,8 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
                       Text(r.date),
                     ],
                   ),
-                  Utils.buildStar(context, r.starScore, r.remainderScore),
+                  ReviewStarsWidget(
+                      score: r.starScore, remainderScore: r.remainderScore),
                 ],
               ),
               SizedBox(height: 10),
@@ -491,7 +499,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
     );
   }
 
-  _buildBottomLeaveCommentBar() {
+  _buildBottomLeaveCommentBar(List<MenuModel> menuListModel) {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 50.0,
@@ -501,7 +509,17 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
         children: <Widget>[
           Flexible(
             child: RaisedButton(
-              onPressed: () {},
+              onPressed: () {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                          child: Padding(
+                        padding: EdgeInsets.all(32.0),
+                        child: CommentFormWidget(menuItems: menuListModel),
+                      ));
+                    });
+              },
               color: Colors.blue[600],
               child: Center(
                 child: Row(

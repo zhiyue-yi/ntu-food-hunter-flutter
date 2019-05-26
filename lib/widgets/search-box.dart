@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SearchBox extends StatelessWidget {
+class SearchBoxWidget extends StatelessWidget {
   BuildContext context;
 
   @override
