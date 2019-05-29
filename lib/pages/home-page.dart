@@ -8,12 +8,8 @@ import 'package:ureca_restaurant_reviews_flutter/widgets/dining-area-item.dart';
 import 'package:ureca_restaurant_reviews_flutter/widgets/search-box.dart';
 
 class HomePage extends StatelessWidget {
-  BuildContext context;
-
   @override
   Widget build(BuildContext context) {
-    this.context = context;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

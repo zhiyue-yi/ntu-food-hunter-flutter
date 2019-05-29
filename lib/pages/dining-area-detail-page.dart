@@ -37,16 +37,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
             return Scaffold(
               appBar: AppBar(
                 centerTitle: true,
-                leading: IconButton(
-                  icon: Icon(
-                    Icons.chevron_left,
-                    size: 40.0,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
+                leading: BackButton(color: Colors.black),
                 backgroundColor: Colors.white,
                 title: Text(
                   snapshot.data.name,

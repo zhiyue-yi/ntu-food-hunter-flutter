@@ -19,3 +19,14 @@ class MenuApiModel {
     //nearby_places = nearByPlacesList.map((v) => DiningAreaPartialModel.fromJson(v)).toList();
   }
 }
+
+class SearchApiModel {
+  List<DiningAreaPartialModel> diningAreas;
+
+  SearchApiModel.fromJson(dynamic json) {
+    List<dynamic> diningAreaList = json;
+
+    diningAreas =
+        diningAreaList.map((v) => DiningAreaPartialModel.fromJson(v)).toList();
+  }
+}
