@@ -9,7 +9,7 @@ class SearchBoxWidget extends StatelessWidget {
     return Card(
       elevation: 4.0,
       child: Container(
-        height: 160,
+        height: 172,
         padding: const EdgeInsets.all(30.0),
         color: Colors.blue[900],
         alignment: Alignment.center,
@@ -55,10 +55,12 @@ class SearchBoxWidget extends StatelessWidget {
                     child: FlatButton(
                       onPressed: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => new SearchResult(
-                                    keyword: keywordCtrl.text)));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                new SearchResult(keyword: keywordCtrl.text),
+                          ),
+                        );
                       },
                       color: Colors.orange[600],
                       child: Center(
