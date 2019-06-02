@@ -1,23 +1,34 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:ureca_restaurant_reviews_flutter/models/comment-model.dart';
 import 'package:ureca_restaurant_reviews_flutter/models/menu-model.dart';
+import 'package:ureca_restaurant_reviews_flutter/util/constants.dart';
 import 'package:ureca_restaurant_reviews_flutter/widgets/star-rating.dart';
 
 class CommentFormWidget extends StatefulWidget {
   final List<MenuModel> menuItems;
+  final int diningAreaId;
 
-  CommentFormWidget({Key key, @required this.menuItems}) : super(key: key);
+  CommentFormWidget(this.diningAreaId, this.menuItems, {Key key})
+      : super(key: key);
 
-  _CommentFormWidgetState createState() => _CommentFormWidgetState(menuItems);
+  _CommentFormWidgetState createState() =>
+      _CommentFormWidgetState(this.diningAreaId, menuItems);
 }
 
 class _CommentFormWidgetState extends State<CommentFormWidget> {
+  final int diningAreaId;
+  int rating = 0;
   List<MenuModel> menuItemList = [];
   List<MenuModel> likedMenuItems = [];
   List<MenuModel> dislikedMenuItems = [];
+  TextEditingController nameController = new TextEditingController();
+  TextEditingController feedbackController = new TextEditingController();
+  StarRatingWidget starRatingWidget;
 
-  final _formKey = GlobalKey<FormState>();
-
-  _CommentFormWidgetState(this.menuItemList);
+  _CommentFormWidgetState(this.diningAreaId, this.menuItemList);
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +71,8 @@ class _CommentFormWidgetState extends State<CommentFormWidget> {
   _buildForm(BuildContext context) {
     EdgeInsets padding = EdgeInsets.symmetric(horizontal: 16, vertical: 0);
     TextStyle subHeader = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
-
+    starRatingWidget = new StarRatingWidget(
+        callback: (value) => {setState(() => rating = value)});
     return <Widget>[
       Padding(
         padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -78,6 +90,7 @@ class _CommentFormWidgetState extends State<CommentFormWidget> {
       Padding(
         padding: padding,
         child: TextFormField(
+          controller: nameController,
           validator: (value) {
             if (value.isEmpty) {
               return 'Please enter your name';
@@ -102,7 +115,7 @@ class _CommentFormWidgetState extends State<CommentFormWidget> {
         ),
       ),
       Center(
-        child: StarRatingWidget(),
+        child: starRatingWidget,
       ),
       Divider(height: 20),
       Padding(
@@ -121,6 +134,7 @@ class _CommentFormWidgetState extends State<CommentFormWidget> {
       Padding(
         padding: padding,
         child: TextFormField(
+          controller: feedbackController,
           keyboardType: TextInputType.multiline,
           maxLines: null,
           validator: (value) {
@@ -174,13 +188,23 @@ class _CommentFormWidgetState extends State<CommentFormWidget> {
         child: RaisedButton(
           color: Colors.blue[600],
           onPressed: () {
-            // Validate will return true if the form is valid, or false if
-            // the form is invalid.
-            if (_formKey.currentState.validate()) {
-              // If the form is valid, we want to show a Snackbar
-              Scaffold.of(context)
-                  .showSnackBar(SnackBar(content: Text('Processing Data')));
-            }
+            CommentModel comment = new CommentModel(
+              id: this.diningAreaId,
+              name: nameController.text,
+              feedback: feedbackController.text,
+              score: rating,
+              like: this.likedMenuItems.map((item) => item.id).toList(),
+              dislike: this.dislikedMenuItems.map((item) => item.id).toList(),
+            );
+            post(
+              Constants.API_RESOURCE_URL + '/webapp/api/comment',
+              body: jsonEncode(comment.toMap()),
+            ).then((response) {
+              Navigator.of(context).pop();
+            }).catchError((error) {
+              print(error);
+              // TODO: handle errors
+            });
           },
           child: Text(
             'Submit',
@@ -210,6 +234,7 @@ class _CommentFormWidgetState extends State<CommentFormWidget> {
               activeColor: isSelected ? Colors.red : Colors.green,
               controlAffinity: ListTileControlAffinity.platform,
               onChanged: (bool) {
+                isSelected = !isSelected;
                 if (mounted) {
                   setState(() {
                     if (isSelected)

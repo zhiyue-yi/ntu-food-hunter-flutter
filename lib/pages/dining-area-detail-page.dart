@@ -47,8 +47,8 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
                 ),
               ),
               body: _buildDiningAreaDetailsPage(context, snapshot.data),
-              bottomNavigationBar:
-                  _buildBottomLeaveCommentBar(snapshot.data.menu),
+              bottomNavigationBar: _buildBottomLeaveCommentBar(
+                  snapshot.data.id, snapshot.data.menu),
             );
           } else {
             return new CircularProgressIndicator();
@@ -489,7 +489,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
     );
   }
 
-  _buildBottomLeaveCommentBar(List<MenuModel> menuListModel) {
+  _buildBottomLeaveCommentBar(int diningAreaId, List<MenuModel> menuListModel) {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 50.0,
@@ -501,10 +501,12 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
             child: RaisedButton(
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            new CommentFormWidget(menuItems: menuListModel)));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        new CommentFormWidget(diningAreaId, menuListModel),
+                  ),
+                );
               },
               color: Colors.blue[600],
               child: Center(
