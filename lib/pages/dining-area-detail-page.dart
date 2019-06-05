@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:ureca_restaurant_reviews_flutter/models/dining-area-detail-model.dart';
 import 'package:ureca_restaurant_reviews_flutter/models/menu-model.dart';
 import 'package:ureca_restaurant_reviews_flutter/models/review-model.dart';
+import 'package:ureca_restaurant_reviews_flutter/pages/search-result-page.dart';
 import 'package:ureca_restaurant_reviews_flutter/util/constants.dart';
 import 'package:ureca_restaurant_reviews_flutter/pages/comment-form.dart';
 import 'package:ureca_restaurant_reviews_flutter/widgets/review-stars.dart';
@@ -184,7 +185,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
       ),
       'subLoc': new Icon(
         Icons.pin_drop,
-        color: Colors.blue[600],
+        color: Color(0xff283593),
       ),
       'phoneNo': new Icon(
         Icons.phone,
@@ -245,7 +246,16 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
       margin: new EdgeInsets.fromLTRB(12, 0, 0, 0),
       alignment: MainAxisAlignment.start,
       tags: tagElements,
-      columns: 3, // default 4
+      columns: 3,
+      onPressed: (tag) {
+        tag.active = true;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => new SearchResult(keyword: tag.title),
+          ),
+        );
+      },
     );
 
     return Row(
@@ -372,7 +382,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
               LinearProgressIndicator(
                 value: point.toDouble() / 10,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  Colors.blue[600],
+                  Color(0xff283593),
                 ),
                 backgroundColor: Colors.grey[200],
               ),
@@ -508,7 +518,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
                   ),
                 );
               },
-              color: Colors.blue[600],
+              color: Color(0xff283593),
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

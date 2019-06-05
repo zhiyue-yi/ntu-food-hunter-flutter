@@ -173,7 +173,7 @@ class _CommentFormWidgetState extends State<CommentFormWidget> {
             Icon(Icons.sentiment_very_dissatisfied),
             SizedBox(width: 10),
             Text(
-              'Likes',
+              'Dislikes',
               style: subHeader,
             ),
           ],
@@ -186,7 +186,7 @@ class _CommentFormWidgetState extends State<CommentFormWidget> {
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
         child: RaisedButton(
-          color: Colors.blue[600],
+          color: Color(0xff283593),
           onPressed: () {
             CommentModel comment = new CommentModel(
               id: this.diningAreaId,
@@ -197,7 +197,7 @@ class _CommentFormWidgetState extends State<CommentFormWidget> {
               dislike: this.dislikedMenuItems.map((item) => item.id).toList(),
             );
             post(
-              Constants.API_RESOURCE_URL + '/webapp/api/comment',
+              Constants.API_RESOURCE_URL + '/webapp/api/post-comment',
               body: jsonEncode(comment.toMap()),
             ).then((response) {
               Navigator.of(context).pop();

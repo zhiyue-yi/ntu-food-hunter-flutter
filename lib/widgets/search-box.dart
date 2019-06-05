@@ -11,7 +11,7 @@ class SearchBoxWidget extends StatelessWidget {
       child: Container(
         height: 172,
         padding: const EdgeInsets.all(30.0),
-        color: Colors.blue[900],
+        color: Color(0xff283593),
         alignment: Alignment.center,
         child: Column(
           children: <Widget>[

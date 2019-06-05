@@ -13,12 +13,12 @@ class ReviewStarsWidget extends StatelessWidget {
 
     stars.addAll(score.map((s) => new Icon(
           Icons.star,
-          color: Theme.of(context).primaryColor,
+          color: Color(0xff283593),
         )));
 
     stars.addAll(remainderScore.map((s) => new Icon(
           Icons.star_border,
-          color: Theme.of(context).primaryColor,
+          color: Color(0xff283593),
         )));
 
     return new Row(
