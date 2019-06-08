@@ -1,14 +1,25 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 import 'package:ureca_restaurant_reviews_flutter/models/api-model.dart';
+import 'package:ureca_restaurant_reviews_flutter/models/dining-area-map-model.dart';
 import 'package:ureca_restaurant_reviews_flutter/models/dining-area-partial-model.dart';
+import 'package:ureca_restaurant_reviews_flutter/models/home-page-model.dart';
 import 'package:ureca_restaurant_reviews_flutter/pages/search-result-page.dart';
 import 'package:ureca_restaurant_reviews_flutter/util/constants.dart';
 import 'package:ureca_restaurant_reviews_flutter/widgets/dining-area-item.dart';
 import 'package:ureca_restaurant_reviews_flutter/widgets/search-box.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  Completer<GoogleMapController> _controller = Completer();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,9 +37,9 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  FutureBuilder<List<DiningAreaPartialModel>> _buildCustomScroller() {
-    return new FutureBuilder<List<DiningAreaPartialModel>>(
-      future: getDiningAreas(),
+  FutureBuilder<HomePageModel> _buildCustomScroller() {
+    return new FutureBuilder<HomePageModel>(
+      future: getHomePageModel(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data != null) {
@@ -42,19 +53,20 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  _buildPage(BuildContext context,
-      AsyncSnapshot<List<DiningAreaPartialModel>> snapshot) {
+  _buildPage(BuildContext context, AsyncSnapshot<HomePageModel> snapshot) {
     List<Widget> widgets = new List<Widget>();
 
     widgets.add(SearchBoxWidget());
 
     widgets.add(_buildCategoryBlock(context));
 
+    widgets.add(_buildGoogleMap(context, snapshot.data.mapData));
+
     widgets.add(Divider());
 
     widgets.add(_buildSubtitle());
 
-    snapshot.data.forEach((diningArea) =>
+    snapshot.data.diningAreas.forEach((DiningAreaPartialModel diningArea) =>
         widgets.add(DiningAreaItemWidget(diningAreaItem: diningArea)));
 
     return ListView(
@@ -142,6 +154,47 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  _buildGoogleMap(BuildContext context, List<DiningAreaMapModel> models) {
+    Set<Marker> markers = models
+        .map(
+          (model) => new Marker(
+                markerId: MarkerId(model.subarea),
+                position: LatLng(model.latitude, model.longitude),
+                infoWindow: InfoWindow(
+                  title: model.subarea,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            new SearchResult(keyword: model.subarea),
+                      ),
+                    );
+                  },
+                ),
+                icon: BitmapDescriptor.defaultMarkerWithHue(
+                  BitmapDescriptor.hueAzure,
+                ),
+              ),
+        )
+        .toSet();
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      height: 300,
+      width: MediaQuery.of(context).size.width,
+      child: GoogleMap(
+        mapType: MapType.normal,
+        initialCameraPosition:
+            CameraPosition(target: LatLng(1.348100, 103.683259), zoom: 14),
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+        },
+        markers: markers,
+      ),
+    );
+  }
+
   _buildSubtitle() {
     return Container(
       child: Column(
@@ -165,7 +218,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Future<List<DiningAreaPartialModel>> getDiningAreas() async {
+  Future<HomePageModel> getHomePageModel() async {
     final response =
         await get(Constants.API_RESOURCE_URL + '/webapp/api/toprated');
     dynamic responseJson = json.decode(response.body.toString());
@@ -175,6 +228,7 @@ class HomePage extends StatelessWidget {
     list.addAll(topRated.restaurant);
     list.addAll(topRated.food_court);
 
-    return list;
+    HomePageModel model = new HomePageModel(list, topRated.nearby_places);
+    return model;
   }
 }
