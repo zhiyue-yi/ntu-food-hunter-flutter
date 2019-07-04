@@ -219,16 +219,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<HomePageModel> getHomePageModel() async {
-    final response =
+    try {
+      final response =
         await get(Constants.API_RESOURCE_URL + '/webapp/api/toprated');
-    dynamic responseJson = json.decode(response.body.toString());
-    MenuApiModel topRated = MenuApiModel.fromJson(responseJson);
+      dynamic responseJson = json.decode(response.body.toString());
+      MenuApiModel topRated = MenuApiModel.fromJson(responseJson);
 
-    List<DiningAreaPartialModel> list = new List<DiningAreaPartialModel>();
-    list.addAll(topRated.restaurant);
-    list.addAll(topRated.food_court);
+      List<DiningAreaPartialModel> list = new List<DiningAreaPartialModel>();
+      list.addAll(topRated.restaurant);
+      list.addAll(topRated.food_court);
 
-    HomePageModel model = new HomePageModel(list, topRated.nearby_places);
-    return model;
+      HomePageModel model = new HomePageModel(list, topRated.nearby_places);
+      return model;
+    } catch (e) {
+      return new HomePageModel(null, null);
+    }
   }
 }

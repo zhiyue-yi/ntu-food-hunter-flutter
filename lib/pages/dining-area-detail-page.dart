@@ -61,14 +61,17 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
   }
 
   Future<DiningAreaDetailModel> getDiningArea(int id) async {
-    final response = await get(
+    try {
+      final response = await get(
         Constants.API_RESOURCE_URL + '/webapp/api/diningarea/' + id.toString());
-    dynamic responseJson = json.decode(response.body.toString());
+      dynamic responseJson = json.decode(response.body.toString());
 
-    DiningAreaDetailModel diningArea =
-        DiningAreaDetailModel.fromJson(responseJson);
+      DiningAreaDetailModel diningArea =
+          DiningAreaDetailModel.fromJson(responseJson);
 
-    return diningArea;
+      return diningArea;
+    } catch (e) { }
+    return null;
   }
 
   _buildDiningAreaDetailsPage(

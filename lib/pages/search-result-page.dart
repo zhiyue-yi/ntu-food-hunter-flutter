@@ -60,16 +60,21 @@ class _SearchResultState extends State<SearchResult> {
 
   Future<List<DiningAreaPartialModel>> searchDiningAreas(String keyword) async {
     print(Constants.API_RESOURCE_URL + '/webapp/api/query/' + keyword);
-
-    final response =
-        await get(Constants.API_RESOURCE_URL + '/webapp/api/query/' + keyword);
-    dynamic responseJson = json.decode(response.body.toString());
-
-    SearchApiModel result = SearchApiModel.fromJson(responseJson);
-
+    
     List<DiningAreaPartialModel> list = new List<DiningAreaPartialModel>();
-    list.addAll(result.diningAreas);
 
+    try {
+      final response =
+        await get(Constants.API_RESOURCE_URL + '/webapp/api/query/' + keyword);
+      dynamic responseJson = json.decode(response.body.toString());
+
+      SearchApiModel result = SearchApiModel.fromJson(responseJson);
+
+      list.addAll(result.diningAreas);
+    } catch(e) {
+      
+    }
+    
     return list;
   }
 }
