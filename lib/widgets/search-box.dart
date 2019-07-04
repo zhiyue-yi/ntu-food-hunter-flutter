@@ -9,7 +9,7 @@ class SearchBoxWidget extends StatelessWidget {
     return Card(
       elevation: 4.0,
       child: Container(
-        height: 172,
+        height: 173,
         padding: const EdgeInsets.all(30.0),
         color: Color(0xff283593),
         alignment: Alignment.center,
