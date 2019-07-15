@@ -40,19 +40,19 @@ class _SearchResultState extends State<SearchResult> {
       body: new FutureBuilder<List<DiningAreaPartialModel>>(
         future: searchDiningAreas(this.keyword),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data != null) {
-              return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return DiningAreaItemWidget(
-                        diningAreaItem: snapshot.data[index]);
-                  });
-            } else {
-              return new CircularProgressIndicator();
-            }
+          if (snapshot.data != null && snapshot.data.length > 0) {
+            return ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return DiningAreaItemWidget(
+                    diningAreaItem: snapshot.data[index]);
+                  },
+                );
+          } else {
+            return Center(
+              child: Text('No result is found', style: TextStyle(fontSize: 20),),
+            );
           }
-          return ErrorWidget(context);
         },
       ),
     );
@@ -63,18 +63,13 @@ class _SearchResultState extends State<SearchResult> {
     
     List<DiningAreaPartialModel> list = new List<DiningAreaPartialModel>();
 
-    try {
-      final response =
-        await get(Constants.API_RESOURCE_URL + '/webapp/api/query/' + keyword);
-      dynamic responseJson = json.decode(response.body.toString());
+    final response =
+      await get(Constants.API_RESOURCE_URL + '/webapp/api/query/' + keyword);
+    dynamic responseJson = json.decode(response.body.toString());
 
-      SearchApiModel result = SearchApiModel.fromJson(responseJson);
+    SearchApiModel result = SearchApiModel.fromJson(responseJson);
 
-      list.addAll(result.diningAreas);
-    } catch(e) {
-      
-    }
-    
+    list.addAll(result.diningAreas);
     return list;
   }
 }

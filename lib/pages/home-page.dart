@@ -41,33 +41,31 @@ class _HomePageState extends State<HomePage> {
     return new FutureBuilder<HomePageModel>(
       future: getHomePageModel(),
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data != null) {
-            return _buildPage(context, snapshot);
-          } else {
-            return new CircularProgressIndicator();
-          }
+          return _buildPage(context, snapshot);
         }
-        return ErrorWidget(context);
       },
     );
   }
 
   _buildPage(BuildContext context, AsyncSnapshot<HomePageModel> snapshot) {
     List<Widget> widgets = new List<Widget>();
-
     widgets.add(SearchBoxWidget());
-
     widgets.add(_buildCategoryBlock(context));
 
-    widgets.add(_buildGoogleMap(context, snapshot.data.mapData));
+    if(snapshot.data != null) {
+      widgets.add(_buildGoogleMap(context, snapshot.data.mapData));
+      widgets.add(Divider());
+      widgets.add(_buildSubtitle());
 
-    widgets.add(Divider());
-
-    widgets.add(_buildSubtitle());
-
-    snapshot.data.diningAreas.forEach((DiningAreaPartialModel diningArea) =>
-        widgets.add(DiningAreaItemWidget(diningAreaItem: diningArea)));
+      if(snapshot.data.diningAreas != null)
+        snapshot.data.diningAreas.forEach((DiningAreaPartialModel diningArea) =>
+            widgets.add(DiningAreaItemWidget(diningAreaItem: diningArea)));
+    } else {
+      widgets.add(Divider());
+      widgets.add(Center(
+        child: Text('No result is found', style: TextStyle(fontSize: 20),),
+      ));
+    }
 
     return ListView(
       children: <Widget>[
@@ -155,7 +153,18 @@ class _HomePageState extends State<HomePage> {
   }
 
   _buildGoogleMap(BuildContext context, List<DiningAreaMapModel> models) {
-    Set<Marker> markers = models
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      height: 300,
+      width: MediaQuery.of(context).size.width,
+      child: GoogleMap(
+        mapType: MapType.normal,
+        initialCameraPosition:
+            CameraPosition(target: LatLng(1.348100, 103.683259), zoom: 14),
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+        },
+        markers: models == null ? new Set<Marker>() : models
         .map(
           (model) => new Marker(
                 markerId: MarkerId(model.subarea),
@@ -177,20 +186,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
         )
-        .toSet();
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-      height: 300,
-      width: MediaQuery.of(context).size.width,
-      child: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition:
-            CameraPosition(target: LatLng(1.348100, 103.683259), zoom: 14),
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-        markers: markers,
+        .toSet(),
       ),
     );
   }
@@ -219,20 +215,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<HomePageModel> getHomePageModel() async {
-    try {
-      final response =
-        await get(Constants.API_RESOURCE_URL + '/webapp/api/toprated');
-      dynamic responseJson = json.decode(response.body.toString());
-      MenuApiModel topRated = MenuApiModel.fromJson(responseJson);
+    final response =
+      await get(Constants.API_RESOURCE_URL + '/webapp/api/toprated');
+    dynamic responseJson = json.decode(response.body.toString());
+    MenuApiModel topRated = MenuApiModel.fromJson(responseJson);
 
-      List<DiningAreaPartialModel> list = new List<DiningAreaPartialModel>();
-      list.addAll(topRated.restaurant);
-      list.addAll(topRated.food_court);
+    List<DiningAreaPartialModel> list = new List<DiningAreaPartialModel>();
+    list.addAll(topRated.restaurant);
+    list.addAll(topRated.food_court);
 
-      HomePageModel model = new HomePageModel(list, topRated.nearby_places);
-      return model;
-    } catch (e) {
-      return new HomePageModel(null, null);
-    }
+    HomePageModel model = new HomePageModel(list, topRated.nearby_places);
+    return model;
   }
 }
