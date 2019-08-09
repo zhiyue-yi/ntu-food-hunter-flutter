@@ -20,6 +20,7 @@ dependencies:
   http: ^0.12.0
   flutter_tags: "^0.3.1"
   google_maps_flutter: "^0.5.16"
+  flutter_launcher_icons: "^0.7.2"
   flutter:
     sdk: flutter
 
@@ -67,3 +68,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
+
+flutter_icons:
+  image_path: "assets/app-icon.png"
+  android: true
+  ios:
