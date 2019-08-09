@@ -131,8 +131,8 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
 
   _buildDiningAreaImagesWidgets(List<String> images) {
     List<Widget> imageWidgets = [];
-    imageWidgets.addAll(images
-        .map((image) => Image.network(Constants.API_RESOURCE_URL + image)));
+    imageWidgets.addAll(images.map(
+        (image) => Image.network(Constants.IMAGE_ASSET_RESOURCE_URL + image)));
 
     TabController imagesController =
         TabController(length: imageWidgets.length, vsync: this);
