@@ -169,16 +169,16 @@ class _HomePageState extends State<HomePage> {
             : models
                 .map(
                   (model) => new Marker(
-                    markerId: MarkerId(model.subarea),
+                    markerId: MarkerId(model.subArea),
                     position: LatLng(model.latitude, model.longitude),
                     infoWindow: InfoWindow(
-                      title: model.subarea,
+                      title: model.subArea,
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                new SearchResult(keyword: model.subarea),
+                                new SearchResult(keyword: model.subArea),
                           ),
                         );
                       },
@@ -224,9 +224,9 @@ class _HomePageState extends State<HomePage> {
 
     List<DiningAreaPartialModel> list = new List<DiningAreaPartialModel>();
     list.addAll(topRated.restaurant);
-    list.addAll(topRated.food_court);
+    list.addAll(topRated.foodCourt);
 
-    HomePageModel model = new HomePageModel(list, topRated.nearby_places);
+    HomePageModel model = new HomePageModel(list, topRated.nearbyPlaces);
     return model;
   }
 }

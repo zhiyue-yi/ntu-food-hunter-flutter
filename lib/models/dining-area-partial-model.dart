@@ -1,12 +1,12 @@
 class DiningAreaPartialModel {
   int id;
   String name;
-  String imgurl;
+  String imgUrl;
   String subLoc;
   List<int> score;
   List<int> remainderScore;
 
-  DiningAreaPartialModel(this.id, this.name, this.imgurl, this.subLoc,
+  DiningAreaPartialModel(this.id, this.name, this.imgUrl, this.subLoc,
       this.score, this.remainderScore);
 
   DiningAreaPartialModel.fromJson(Map<String, dynamic> json) {
@@ -15,7 +15,7 @@ class DiningAreaPartialModel {
 
     id = json['id'];
     name = json['name'];
-    imgurl = json['imgurl'];
+    imgUrl = json['imgurl'];
     subLoc = json['sub_loc'];
     score = scoreList.cast<int>().toList();
     remainderScore = remainderScoreList.cast<int>().toList();

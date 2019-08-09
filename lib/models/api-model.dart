@@ -4,10 +4,10 @@ import 'dining-area-map-model.dart';
 
 class MenuApiModel {
   List<DiningAreaPartialModel> restaurant;
-  List<DiningAreaPartialModel> food_court;
-  List<DiningAreaMapModel> nearby_places;
+  List<DiningAreaPartialModel> foodCourt;
+  List<DiningAreaMapModel> nearbyPlaces;
 
-  MenuApiModel(this.restaurant, this.nearby_places, this.food_court);
+  MenuApiModel(this.restaurant, this.nearbyPlaces, this.foodCourt);
 
   MenuApiModel.fromJson(Map<String, dynamic> json) {
     List<dynamic> restaurantList = json['restaurant'];
@@ -16,12 +16,12 @@ class MenuApiModel {
 
     restaurant =
         restaurantList.map((v) => DiningAreaPartialModel.fromJson(v)).toList();
-    food_court =
+    foodCourt =
         foodCourtList.map((v) => DiningAreaPartialModel.fromJson(v)).toList();
 
-    nearby_places = new List<DiningAreaMapModel>();
+    nearbyPlaces = new List<DiningAreaMapModel>();
     nearByPlaces
-        .forEach((k, v) => nearby_places.add(DiningAreaMapModel.fromJson(v)));
+        .forEach((k, v) => nearbyPlaces.add(DiningAreaMapModel.fromJson(v)));
   }
 }
 

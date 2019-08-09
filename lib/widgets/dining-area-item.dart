@@ -42,7 +42,7 @@ class DiningAreaItemWidget extends StatelessWidget {
           children: <Widget>[
             Container(
               child: Image.network(
-                Constants.IMAGE_ASSET_RESOURCE_URL + diningAreaItem.imgurl,
+                Constants.IMAGE_ASSET_RESOURCE_URL + diningAreaItem.imgUrl,
               ),
               width: MediaQuery.of(context).size.width * 0.975,
             ),
