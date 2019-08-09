@@ -33,44 +33,42 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
     return new FutureBuilder<DiningAreaDetailModel>(
       future: getDiningArea(this.id),
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data != null) {
-            return Scaffold(
-              appBar: AppBar(
-                centerTitle: true,
-                leading: BackButton(color: Colors.black),
-                backgroundColor: Colors.white,
-                title: Text(
-                  snapshot.data.name,
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
+        if (snapshot.data != null) {
+          return Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              leading: BackButton(color: Colors.black),
+              backgroundColor: Colors.white,
+              title: Text(
+                snapshot.data.name,
+                style: TextStyle(
+                  color: Colors.black,
                 ),
               ),
-              body: _buildDiningAreaDetailsPage(context, snapshot.data),
-              bottomNavigationBar: _buildBottomLeaveCommentBar(
-                  snapshot.data.id, snapshot.data.menu),
-            );
-          } else {
-            return new CircularProgressIndicator();
-          }
+            ),
+            body: _buildDiningAreaDetailsPage(context, snapshot.data),
+            bottomNavigationBar: _buildBottomLeaveCommentBar(
+                snapshot.data.id, snapshot.data.menu),
+          );
+        } else {
+          return new CircularProgressIndicator();
         }
-        return ErrorWidget(context);
       },
     );
   }
 
   Future<DiningAreaDetailModel> getDiningArea(int id) async {
     try {
-      final response = await get(
-        Constants.API_RESOURCE_URL + '/webapp/api/diningarea/' + id.toString());
+      final response = await get(Constants.API_RESOURCE_URL +
+          '/webapp/api/diningarea/' +
+          id.toString());
       dynamic responseJson = json.decode(response.body.toString());
 
       DiningAreaDetailModel diningArea =
           DiningAreaDetailModel.fromJson(responseJson);
 
       return diningArea;
-    } catch (e) { }
+    } catch (e) {}
     return null;
   }
 
