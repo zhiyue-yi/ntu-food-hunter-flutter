@@ -41,8 +41,7 @@ class _HomePageState extends State<HomePage> {
     return new FutureBuilder<HomePageModel>(
       future: getHomePageModel(),
       builder: (context, snapshot) {
-          return _buildPage(context, snapshot);
-        }
+        return _buildPage(context, snapshot);
       },
     );
   }
@@ -52,18 +51,21 @@ class _HomePageState extends State<HomePage> {
     widgets.add(SearchBoxWidget());
     widgets.add(_buildCategoryBlock(context));
 
-    if(snapshot.data != null) {
+    if (snapshot.data != null) {
       widgets.add(_buildGoogleMap(context, snapshot.data.mapData));
       widgets.add(Divider());
       widgets.add(_buildSubtitle());
 
-      if(snapshot.data.diningAreas != null)
+      if (snapshot.data.diningAreas != null)
         snapshot.data.diningAreas.forEach((DiningAreaPartialModel diningArea) =>
             widgets.add(DiningAreaItemWidget(diningAreaItem: diningArea)));
     } else {
       widgets.add(Divider());
       widgets.add(Center(
-        child: Text('No result is found', style: TextStyle(fontSize: 20),),
+        child: Text(
+          'No result is found',
+          style: TextStyle(fontSize: 20),
+        ),
       ));
     }
 
@@ -109,8 +111,7 @@ class _HomePageState extends State<HomePage> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: <Widget>[
-                    Image.network(
-                        'https://images.pexels.com/photos/6267/menu-restaurant-vintage-table.jpg?cs=srgb&dl=chairs-menu-restaurant-6267.jpg&fm=jpg'),
+                    Image.asset('assets/canteen-pic-1.jpg'),
                     Text(
                       'Restaurant',
                       style: categoryTextStyle,
@@ -136,8 +137,7 @@ class _HomePageState extends State<HomePage> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: <Widget>[
-                    Image.network(
-                        'https://images.pexels.com/photos/2325137/pexels-photo-2325137.jpeg?cs=srgb&dl=adult-buildings-city-2325137.jpg&fm=jpg'),
+                    Image.asset('assets/canteen-pic-2.jpg'),
                     Text(
                       'Food Court',
                       style: categoryTextStyle,
@@ -164,29 +164,31 @@ class _HomePageState extends State<HomePage> {
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
-        markers: models == null ? new Set<Marker>() : models
-        .map(
-          (model) => new Marker(
-                markerId: MarkerId(model.subarea),
-                position: LatLng(model.latitude, model.longitude),
-                infoWindow: InfoWindow(
-                  title: model.subarea,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            new SearchResult(keyword: model.subarea),
-                      ),
-                    );
-                  },
-                ),
-                icon: BitmapDescriptor.defaultMarkerWithHue(
-                  BitmapDescriptor.hueAzure,
-                ),
-              ),
-        )
-        .toSet(),
+        markers: models == null
+            ? new Set<Marker>()
+            : models
+                .map(
+                  (model) => new Marker(
+                    markerId: MarkerId(model.subarea),
+                    position: LatLng(model.latitude, model.longitude),
+                    infoWindow: InfoWindow(
+                      title: model.subarea,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                new SearchResult(keyword: model.subarea),
+                          ),
+                        );
+                      },
+                    ),
+                    icon: BitmapDescriptor.defaultMarkerWithHue(
+                      BitmapDescriptor.hueAzure,
+                    ),
+                  ),
+                )
+                .toSet(),
       ),
     );
   }
@@ -216,7 +218,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<HomePageModel> getHomePageModel() async {
     final response =
-      await get(Constants.API_RESOURCE_URL + '/webapp/api/toprated');
+        await get(Constants.API_RESOURCE_URL + '/webapp/api/toprated');
     dynamic responseJson = json.decode(response.body.toString());
     MenuApiModel topRated = MenuApiModel.fromJson(responseJson);
 
