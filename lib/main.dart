@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ureca_restaurant_reviews_flutter/pages/home-page.dart';
-import 'package:ureca_restaurant_reviews_flutter/util/routes.dart';
+import 'package:ntu_foodhunter/pages/home-page.dart';
+import 'package:ntu_foodhunter/util/routes.dart';
 
 void main() {
   runApp(

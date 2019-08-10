@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:ureca_restaurant_reviews_flutter/models/api-model.dart';
-import 'package:ureca_restaurant_reviews_flutter/models/dining-area-partial-model.dart';
-import 'package:ureca_restaurant_reviews_flutter/util/constants.dart';
-import 'package:ureca_restaurant_reviews_flutter/widgets/dining-area-item.dart';
+import 'package:ntu_foodhunter/models/api-model.dart';
+import 'package:ntu_foodhunter/models/dining-area-partial-model.dart';
+import 'package:ntu_foodhunter/util/constants.dart';
+import 'package:ntu_foodhunter/widgets/dining-area-item.dart';
 
 class SearchResult extends StatefulWidget {
   String keyword;

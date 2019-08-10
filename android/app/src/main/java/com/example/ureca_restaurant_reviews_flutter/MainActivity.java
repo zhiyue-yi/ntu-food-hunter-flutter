@@ -1,4 +1,4 @@
-package com.example.ureca_restaurant_reviews_flutter;
+package com.ntu.foodhunter;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

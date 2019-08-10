@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ureca_restaurant_reviews_flutter/pages/dining-area-detail-page.dart';
-import 'package:ureca_restaurant_reviews_flutter/util/constants.dart';
+import 'package:ntu_foodhunter/pages/dining-area-detail-page.dart';
+import 'package:ntu_foodhunter/util/constants.dart';
 
 class Routes {
   static final routes = <String, WidgetBuilder>{

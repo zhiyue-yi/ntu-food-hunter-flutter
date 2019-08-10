@@ -1,5 +1,5 @@
-import 'package:ureca_restaurant_reviews_flutter/models/review-model.dart';
-import 'package:ureca_restaurant_reviews_flutter/models/menu-model.dart';
+import 'package:ntu_foodhunter/models/review-model.dart';
+import 'package:ntu_foodhunter/models/menu-model.dart';
 
 class DiningAreaDetailModel {
   int id;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ureca_restaurant_reviews_flutter/models/dining-area-partial-model.dart';
-import 'package:ureca_restaurant_reviews_flutter/pages/dining-area-detail-page.dart';
-import 'package:ureca_restaurant_reviews_flutter/util/constants.dart';
-import 'package:ureca_restaurant_reviews_flutter/widgets/review-stars.dart';
+import 'package:ntu_foodhunter/models/dining-area-partial-model.dart';
+import 'package:ntu_foodhunter/pages/dining-area-detail-page.dart';
+import 'package:ntu_foodhunter/util/constants.dart';
+import 'package:ntu_foodhunter/widgets/review-stars.dart';
 
 class DiningAreaDetailRouteArguments {
   DiningAreaDetailRouteArguments({this.id});

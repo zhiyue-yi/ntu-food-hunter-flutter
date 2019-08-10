@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ureca_restaurant_reviews_flutter/pages/search-result-page.dart';
+import 'package:ntu_foodhunter/pages/search-result-page.dart';
 
 class SearchBoxWidget extends StatelessWidget {
   final keywordCtrl = new TextEditingController();

@@ -1,4 +1,4 @@
-# ureca_restaurant_reviews_flutter
+# ntu_foodhunter
 
 A new Flutter project.
 

@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/selectable_tags.dart';
 import 'package:http/http.dart';
-import 'package:ureca_restaurant_reviews_flutter/models/dining-area-detail-model.dart';
-import 'package:ureca_restaurant_reviews_flutter/models/menu-model.dart';
-import 'package:ureca_restaurant_reviews_flutter/models/review-model.dart';
-import 'package:ureca_restaurant_reviews_flutter/pages/search-result-page.dart';
-import 'package:ureca_restaurant_reviews_flutter/util/constants.dart';
-import 'package:ureca_restaurant_reviews_flutter/pages/comment-form.dart';
-import 'package:ureca_restaurant_reviews_flutter/widgets/review-stars.dart';
+import 'package:ntu_foodhunter/models/dining-area-detail-model.dart';
+import 'package:ntu_foodhunter/models/menu-model.dart';
+import 'package:ntu_foodhunter/models/review-model.dart';
+import 'package:ntu_foodhunter/pages/search-result-page.dart';
+import 'package:ntu_foodhunter/util/constants.dart';
+import 'package:ntu_foodhunter/pages/comment-form.dart';
+import 'package:ntu_foodhunter/widgets/review-stars.dart';
 
 class DiningAreaDetailPage extends StatefulWidget {
   int id = 1;

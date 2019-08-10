@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:ureca_restaurant_reviews_flutter/models/comment-model.dart';
-import 'package:ureca_restaurant_reviews_flutter/models/menu-model.dart';
-import 'package:ureca_restaurant_reviews_flutter/util/constants.dart';
-import 'package:ureca_restaurant_reviews_flutter/widgets/star-rating.dart';
+import 'package:ntu_foodhunter/models/comment-model.dart';
+import 'package:ntu_foodhunter/models/menu-model.dart';
+import 'package:ntu_foodhunter/util/constants.dart';
+import 'package:ntu_foodhunter/widgets/star-rating.dart';
 
 class CommentFormWidget extends StatefulWidget {
   final List<MenuModel> menuItems;
