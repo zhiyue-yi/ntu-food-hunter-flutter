@@ -271,7 +271,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
 
   _buildRatingsAndMenuWidgets(DiningAreaDetailModel model) {
     TabController tabController = new TabController(length: 2, vsync: this);
-    double totalPoint = model.excellentReview +
+    int totalPoint = model.excellentReview +
         model.aboveReview +
         model.avgReview +
         model.belowReview +
@@ -338,7 +338,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
     ]);
   }
 
-  _buildRating(String ratingType, double totalPoint, double point) {
+  _buildRating(String ratingType, int totalPoint, int point) {
     String figureKey = ratingType + 'Review';
     String percentKey = ratingType + 'ReviewPercent';
 
