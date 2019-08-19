@@ -12,11 +12,11 @@ class DiningAreaDetailModel {
   double avgScore;
   List<String> images;
   int totalReviewer;
-  int poorReview;
-  int belowReview;
-  int avgReview;
-  int aboveReview;
-  int excellentReview;
+  double poorReview;
+  double belowReview;
+  double avgReview;
+  double aboveReview;
+  double excellentReview;
   String poorReviewPercent;
   String belowReviewPercent;
   String avgReviewPercent;
@@ -51,9 +51,18 @@ class DiningAreaDetailModel {
     aboveReviewPercent = json['aboveReviewPercent'];
     excellentReview = json['excellentReview'];
     excellentReviewPercent = json['excellentReviewPercent'];
-    tag = tagList.map((x) => x['name'].toString()).toList();
-    menu = menuList.map((x) => MenuModel.fromJson(x)).toList();
-    review = reviewList.map((x) => ReviewModel.fromJson(x)).toList();
+
+    tag = tagList.length > 0
+        ? tagList.map((x) => x['name'].toString()).toList()
+        : new List<String>();
+
+    menu = menuList.length > 0
+        ? menuList.map((x) => MenuModel.fromJson(x)).toList()
+        : new List<MenuModel>();
+
+    review = reviewList.length > 0
+        ? reviewList.map((x) => ReviewModel.fromJson(x)).toList()
+        : new List<ReviewModel>();
 
     images = new List<String>();
     images.add(json['imgActive'].toString());

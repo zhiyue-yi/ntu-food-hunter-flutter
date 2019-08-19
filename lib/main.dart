@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ntu_foodhunter/pages/home-page.dart';
-import 'package:ntu_foodhunter/util/routes.dart';
 
 void main() {
   runApp(
     MaterialApp(
       home: HomePage(),
-      routes: Routes.routes,
       theme: ThemeData(
         // Define the default Brightness and Colors
         brightness: Brightness.light,

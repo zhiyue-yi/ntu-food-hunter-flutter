@@ -62,6 +62,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
       final response = await get(Constants.API_RESOURCE_URL +
           '/webapp/api/diningarea/' +
           id.toString());
+
       dynamic responseJson = json.decode(response.body.toString());
 
       DiningAreaDetailModel diningArea =
@@ -270,7 +271,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
 
   _buildRatingsAndMenuWidgets(DiningAreaDetailModel model) {
     TabController tabController = new TabController(length: 2, vsync: this);
-    int totalPoint = model.excellentReview +
+    double totalPoint = model.excellentReview +
         model.aboveReview +
         model.avgReview +
         model.belowReview +
@@ -337,7 +338,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
     ]);
   }
 
-  _buildRating(String ratingType, int totalPoint, int point) {
+  _buildRating(String ratingType, double totalPoint, double point) {
     String figureKey = ratingType + 'Review';
     String percentKey = ratingType + 'ReviewPercent';
 

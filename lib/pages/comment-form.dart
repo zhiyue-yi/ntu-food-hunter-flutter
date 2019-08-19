@@ -197,7 +197,7 @@ class _CommentFormWidgetState extends State<CommentFormWidget> {
               dislike: this.dislikedMenuItems.map((item) => item.id).toList(),
             );
             post(
-              Constants.API_RESOURCE_URL + '/webapp/api/post-comment',
+              Constants.API_RESOURCE_URL + '/webapp/api/feedback',
               body: jsonEncode(comment.toMap()),
             ).then((response) {
               Navigator.of(context).pop();

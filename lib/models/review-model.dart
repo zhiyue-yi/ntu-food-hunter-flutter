@@ -18,9 +18,21 @@ class ReviewModel {
     reviewer = json['reviewer'];
     date = json['date'];
     comment = json['comment'];
-    starScore = starScoreList.cast<int>().toList();
-    remainderScore = remainderScoreList.cast<int>().toList();
-    likes = likesList.map((x) => x.toString()).toList();
-    dislikes = dislikesList.map((x) => x.toString()).toList();
+
+    starScore = starScoreList.length > 0
+        ? starScoreList.cast<int>().toList()
+        : new List<int>();
+
+    remainderScore = remainderScoreList.length > 0
+        ? remainderScoreList.cast<int>().toList()
+        : new List<int>();
+
+    likes = likesList.length > 0
+        ? likesList.map((x) => x.toString()).toList()
+        : new List<String>();
+
+    dislikes = dislikesList.length > 0
+        ? dislikesList.map((x) => x.toString()).toList()
+        : new List<String>();
   }
 }
