@@ -12,11 +12,11 @@ class DiningAreaDetailModel {
   double avgScore;
   List<String> images;
   int totalReviewer;
-  int poorReview;
-  int belowReview;
-  int avgReview;
-  int aboveReview;
-  int excellentReview;
+  double poorReview;
+  double belowReview;
+  double avgReview;
+  double aboveReview;
+  double excellentReview;
   String poorReviewPercent;
   String belowReviewPercent;
   String avgReviewPercent;

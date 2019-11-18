@@ -41,9 +41,7 @@ class DiningAreaItemWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
-              child: Image.network(
-                Constants.IMAGE_ASSET_RESOURCE_URL + diningAreaItem.imgUrl,
-              ),
+              child: Image.asset('assets/canteen-pic-2.jpg'),
               width: MediaQuery.of(context).size.width * 0.975,
             ),
             SizedBox(

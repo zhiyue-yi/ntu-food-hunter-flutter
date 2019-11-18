@@ -8,6 +8,7 @@ import 'package:ntu_foodhunter/models/review-model.dart';
 import 'package:ntu_foodhunter/pages/search-result-page.dart';
 import 'package:ntu_foodhunter/util/constants.dart';
 import 'package:ntu_foodhunter/pages/comment-form.dart';
+import 'package:ntu_foodhunter/widgets/loading.dart';
 import 'package:ntu_foodhunter/widgets/review-stars.dart';
 
 class DiningAreaDetailPage extends StatefulWidget {
@@ -51,7 +52,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
                 snapshot.data.id, snapshot.data.menu),
           );
         } else {
-          return new CircularProgressIndicator();
+          return LoadingWidget();
         }
       },
     );
@@ -62,14 +63,16 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
       final response = await get(Constants.API_RESOURCE_URL +
           '/webapp/api/diningarea/' +
           id.toString());
-
       dynamic responseJson = json.decode(response.body.toString());
 
       DiningAreaDetailModel diningArea =
           DiningAreaDetailModel.fromJson(responseJson);
 
       return diningArea;
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+    }
+
     return null;
   }
 
@@ -132,8 +135,8 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
 
   _buildDiningAreaImagesWidgets(List<String> images) {
     List<Widget> imageWidgets = [];
-    imageWidgets.addAll(images.map(
-        (image) => Image.network(Constants.IMAGE_ASSET_RESOURCE_URL + image)));
+    imageWidgets
+        .addAll(images.map((image) => Image.asset('assets/canteen-pic-2.jpg')));
 
     TabController imagesController =
         TabController(length: imageWidgets.length, vsync: this);
@@ -271,7 +274,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
 
   _buildRatingsAndMenuWidgets(DiningAreaDetailModel model) {
     TabController tabController = new TabController(length: 2, vsync: this);
-    int totalPoint = model.excellentReview +
+    double totalPoint = model.excellentReview +
         model.aboveReview +
         model.avgReview +
         model.belowReview +
@@ -338,7 +341,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
     ]);
   }
 
-  _buildRating(String ratingType, int totalPoint, int point) {
+  _buildRating(String ratingType, double totalPoint, double point) {
     String figureKey = ratingType + 'Review';
     String percentKey = ratingType + 'ReviewPercent';
 
@@ -399,7 +402,7 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
           width: 10,
         ),
         Text(
-          (point / totalPoint * 100).toString() + '%',
+          (point / totalPoint * 100).round().toString() + '%',
         )
       ],
     );
