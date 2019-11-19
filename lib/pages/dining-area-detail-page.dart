@@ -402,7 +402,9 @@ class _DiningAreaDetailPageState extends State<DiningAreaDetailPage>
           width: 10,
         ),
         Text(
-          (point / totalPoint * 100).round().toString() + '%',
+          !(point / totalPoint * 100).isNaN
+              ? (point / totalPoint * 100).round().toString() + '%'
+              : '0%',
         )
       ],
     );
